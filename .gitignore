@@ -1,0 +1,63 @@
+# ========================================
+# .gitignore para proyectos C++ (VS Code)
+# Autor: Lucas Ferreyra (lucasferreyra10)
+# ========================================
+
+# --- Archivos de compilación ---
+*.obj
+*.o
+*.out
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.exp
+*.pdb
+*.idb
+*.app
+*.iobj
+*.ipdb
+
+# --- Carpetas de build / binarios ---
+/build/
+/bin/
+/dist/
+/Debug/
+/Release/
+/target/
+/x64/
+/x86/
+
+# --- Archivos temporales / logs ---
+*.log
+*.tmp
+*.cache
+*.bak
+*.swp
+*.swo
+
+# --- Configuración de VS Code y otros IDEs ---
+.vscode/
+.idea/
+*.code-workspace
+*.sln
+*.vcxproj*
+*.db
+*.sdf
+
+# --- Archivos de sistema ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Otros ---
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# --- Repositorios locales / metadatos ---
+.gitignore
+!.gitignore
