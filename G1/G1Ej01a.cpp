@@ -22,7 +22,7 @@ void ObtDatos(float &cata, float &catb) {
 
 // Función para calcular la hipotenusa
 float CalcHipot(float cata, float catb) {
-    return sqrt(pow(cata, 2) + pow(catb, 2));
+    return sqrt(cata * cata + catb * catb);
 }
 
 // Función para mostrar el resultado

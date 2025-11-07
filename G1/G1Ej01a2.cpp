@@ -22,7 +22,7 @@ void ObtDatos(float &cata, float &catb) {
 
 // Función para calcular la hipotenusa
 float CalcHipot(float cata, float catb) {
-    return sqrt(pow(cata, 2) + pow(catb, 2));
+    return std::sqrt(static_cast<float>(pow(cata, 2) + pow(catb, 2)));
 }
 
 // Función para mostrar el resultado

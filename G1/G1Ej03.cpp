@@ -24,7 +24,7 @@ int main() {
     cin >> b;
 
     // Calcular hipotenusa
-    c = sqrt(pow(a, 2) + pow(b, 2));
+    c = sqrt(a * a + b * b);
 
     // Calcular superficie del cuadrado según condición
     if (c > 100)
