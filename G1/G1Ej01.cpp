@@ -20,7 +20,7 @@ int main() {
     cout << "Cateto b: ";
     cin >> b;
 
-    c = sqrt(pow(a, 2) + pow(b, 2));
+    c = sqrt(a * a + b * b);
 
     cout << "Hipotenusa: " << c << endl;
     return 0;
