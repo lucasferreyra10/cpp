@@ -1,7 +1,7 @@
 /*
 Id.Programa: G3Ej01.cpp
 Autor......: Dev. Lucas Ferreyra
-Fecha......: mayo-2025
+Fecha......: junio-2025
 Comentario.: Encuesta de 100 personas, 3 preguntas (Q1,Q2,Q3) correctas (si/no).
              Resuelve:
                1) Asignacion externa por CONTEOS (solo cantidades).
