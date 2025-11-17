@@ -5,6 +5,7 @@
 
 # --- Archivos de compilación ---
 *.dat
+*.DAT
 *.obj
 *.o
 *.out
