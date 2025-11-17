@@ -46,7 +46,7 @@ int main() {
 
     ArticuloIn  a;
     ArticuloOut b;
-    size_t cant = 0;
+    std::size_t cant = 0;
 
     while (in.read(reinterpret_cast<char*>(&a), sizeof(a))) {
         if (a.precio > umbral) {

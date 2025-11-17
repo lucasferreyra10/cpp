@@ -15,6 +15,7 @@ Comentario.:
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <string>
 using namespace std;
 
 struct Articulo {
@@ -48,16 +49,11 @@ int main() {
         }
 
         cout << "Descripcion (max 20 caracteres, sin espacios): ";
-        cin >> ws; // limpiar espacios previos
-        string desc;
-        getline(cin, desc);
-
-        if (desc.empty() || desc.size() > 20) {
+        cin >> art.descripcion;
+        if (strlen(art.descripcion) == 0 || strlen(art.descripcion) > 20) {
             cout << "  ❌ Descripcion invalida.\n";
             continue;
         }
-        strncpy(art.descripcion, desc.c_str(), 20);
-        art.descripcion[20] = '\0';
 
         cout << "Precio unitario (>0): ";
         cin >> art.precio;

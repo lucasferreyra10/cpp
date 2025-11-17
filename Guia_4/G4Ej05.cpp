@@ -90,8 +90,8 @@ int main() {
             cin >> ws;
             string nom;
             getline(cin, nom);               // ← ahora sí funciona
-            strncpy(art.nombre, nom.c_str(), 20);  // ← ok
-            art.nombre[20] = '\0';
+            strncpy(art.nombre, nom.c_str(), sizeof(art.nombre) - 1);  // ← ok
+            art.nombre[sizeof(art.nombre) - 1] = '\0';
 
             cout << "Precio: ";
             cin >> art.precio;
@@ -134,8 +134,8 @@ int main() {
             cin >> ws;
             string nom;
             getline(cin, nom);
-            strncpy(art.nombre, nom.c_str(), 20);
-            art.nombre[20] = '\0';
+            strncpy(art.nombre, nom.c_str(), sizeof(art.nombre) - 1);
+            art.nombre[sizeof(art.nombre) - 1] = '\0';
 
             cout << "Nuevo precio: ";
             cin >> art.precio;
