@@ -1,107 +1,110 @@
 /*
 Id.Programa: G5Ej01.cpp
 Autor......: Dev. Lucas Ferreyra
-Fecha......: agosto-2025
-Comentario.: Archivo de Gastos (importe real, mes 1..12) sin orden.
-             Emitir por cada mes los gastos en orden inverso al de llegada,
-             ademas total por mes y total anual.
-             Se usan listas enlazadas por mes y recursion para imprimir en reversa.
+Fecha......: octubre-2025
+Comentario.:
+    A partir del archivo GASTOS.DAT, que contiene los gastos de un año calendario:
+        - Importe (double)
+        - Mes (1..12)
+
+    El programa:
+      - Lee los gastos sin orden y los distribuye en 12 pilas (una por mes),
+        de modo que queden almacenados en el orden de llegada.
+      - Luego emite, para cada mes del año, el listado de importes en
+        ORDEN INVERSO respecto de cómo fueron leídos.
+      - Informa el total de cada mes y el total anual.
+
+    Archivo de entrada:
+      GASTOS.DAT  (binario)
+        struct Gasto {
+            double importe;
+            int mes;      // 1..12
+        };
 */
 
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <string>
 using namespace std;
 
-struct Nodo {
+struct Gasto {
     double importe;
-    Nodo* sig;
-    Nodo(double x) : importe(x), sig(nullptr) {}
+    int mes; // 1..12
 };
 
-// agrega al final para conservar orden de llegada
-void append(Nodo*& head, Nodo*& tail, double importe) {
-    Nodo* n = new Nodo(importe);
-    if (!head) { head = tail = n; }
-    else { tail->sig = n; tail = n; }
-}
+const int MAX_GASTOS_MES = 5000;  // capacidad máxima por mes
 
-// imprime en orden inverso al de llegada usando recursion
-void imprimirReverso(Nodo* head) {
-    if (!head) return;
-    imprimirReverso(head->sig);
-    cout << "  - $" << fixed << setprecision(2) << head->importe << "\n";
-}
+struct PilaMes {
+    double importe[MAX_GASTOS_MES];
+    int tope;
+};
 
-// libera memoria de una lista
-void liberar(Nodo*& head) {
-    while (head) {
-        Nodo* t = head;
-        head = head->sig;
-        delete t;
-    }
+string nombreMes(int mes) {
+    static string nombres[13] = {
+        "", "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+        "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+    };
+    if (mes >= 1 && mes <= 12) return nombres[mes];
+    return "Mes invalido";
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    // Inicializar pilas por mes
+    PilaMes pilas[13]; // usamos índices 1..12
+    for (int m = 1; m <= 12; m++) {
+        pilas[m].tope = -1;
+    }
 
-    // 12 listas (1..12). Usamos 13 para indexar directo por mes.
-    Nodo* head[13] = {nullptr};
-    Nodo* tail[13] = {nullptr};
     double totalMes[13] = {0.0};
     double totalAnual = 0.0;
 
-    // abrir archivo
-    ifstream in("gastos.txt");
-    if (!in) {
-        cout << "No se pudo abrir el archivo 'gastos.txt'.\n";
-        cout << "Formato esperado por linea: <importe> <mes>\n";
-        cout << "Ejemplo:\n";
-        cout << "  1234.50 3\n  980.00 3\n  250.75 12\n";
+    ifstream fG("GASTOS.DAT", ios::binary);
+    if (!fG) {
+        cout << "No se pudo abrir el archivo GASTOS.DAT" << endl;
         return 1;
     }
 
-    // lectura
-    double importe;
-    int mes;
-    int registros = 0;
-    while (in >> importe >> mes) {
-        if (mes < 1 || mes > 12) {
-            cout << "Registro ignorado (mes invalido): " << importe << " " << mes << "\n";
-            continue;
-        }
-        append(head[mes], tail[mes], importe);
-        totalMes[mes] += importe;
-        totalAnual += importe;
-        registros++;
-    }
-    in.close();
+    Gasto reg;
+    while (fG.read(reinterpret_cast<char*>(&reg), sizeof(Gasto))) {
+        if (reg.mes >= 1 && reg.mes <= 12) {
+            if (pilas[reg.mes].tope < MAX_GASTOS_MES - 1) {
+                pilas[reg.mes].tope++;
+                pilas[reg.mes].importe[pilas[reg.mes].tope] = reg.importe;
 
-    cout << "GASTOS ANUALES (" << registros << " registros leidos)\n";
-    cout << "Listado por mes en orden inverso de llegada\n\n";
-
-    // emitir por mes
-    for (int m = 1; m <= 12; ++m) {
-        static const char* nombreMes[13] = {
-            "", "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-            "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
-        };
-
-        cout << "Mes " << setw(2) << m << " - " << nombreMes[m] << "\n";
-        if (!head[m]) {
-            cout << "  (sin gastos)\n";
+                totalMes[reg.mes] += reg.importe;
+                totalAnual += reg.importe;
+            } else {
+                cout << "Pila llena para el mes " << reg.mes << ", gasto ignorado." << endl;
+            }
         } else {
-            imprimirReverso(head[m]); // recursion -> imprime al reves del ingreso
+            cout << "Registro con mes invalido (" << reg.mes << ") ignorado." << endl;
         }
-        cout << "  Total mes: $" << fixed << setprecision(2) << totalMes[m] << "\n\n";
+    }
+    fG.close();
+
+    cout << fixed << setprecision(2);
+    cout << "Listado de gastos por mes (en orden inverso de lectura)\n" << endl;
+
+    for (int m = 1; m <= 12; m++) {
+        cout << "Mes: " << nombreMes(m) << " (" << m << ")" << endl;
+        cout << "Importes:" << endl;
+
+        if (pilas[m].tope == -1) {
+            cout << "  (Sin gastos para este mes)" << endl;
+        } else {
+            // Desapilar para listar en orden inverso al de lectura
+            while (pilas[m].tope >= 0) {
+                double imp = pilas[m].importe[pilas[m].tope];
+                pilas[m].tope--;
+                cout << "  " << imp << endl;
+            }
+        }
+
+        cout << "Total del mes: " << totalMes[m] << "\n" << endl;
     }
 
-    cout << "---------------------------------------------\n";
-    cout << "TOTAL ANUAL: $" << fixed << setprecision(2) << totalAnual << "\n";
-
-    // liberar memoria
-    for (int m = 1; m <= 12; ++m) liberar(head[m]);
+    cout << "Total anual: " << totalAnual << endl;
 
     return 0;
 }
